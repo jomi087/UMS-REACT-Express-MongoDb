@@ -1,0 +1,5 @@
+* credentials: "include" / withCredentials: true
+    By default, browsers do not send cookies **when making cross-origin requests**. If my backend is storing anything inside cookies (such as in this case i am passing jwt token in cookies  from backend to the frontend), I must use { withCredentials: true } in Axios or { credentials: "include" } in fetch to ensure those cookies are included in every request. This option ensures that cookies are both sent to the server and received from the server. 
+
+* FormData
+    FormData is a built-in JavaScript object used to send **form data including files**.It automatically sets the correct Content-Type (which is multipart/form-data when sending files there for we dont need to sett headers ). This is required when uploading images along with other data. we can use it for only json data also but that will be over-kill cz  fromData is mainly focus on files + an add on it handles text based data but it there is no files and only json data then using it will  like using JCB to pick a small rock 

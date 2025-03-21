@@ -38,11 +38,12 @@ const SignUp = () => {
     if (imageError) return toast.error(imageError);
 
     const formData = new FormData()  //! *ReadMe
-    formData.append("name",name)
-    formData.append("phone",phone)
-    formData.append("email",email)
-    formData.append("password",password)
-    formData.append("image",profileImage)
+    formData.append("name", name.trim());  
+    formData.append("phone", phone.trim());
+    formData.append("email", email.trim());
+    formData.append("password", password.trim());
+    formData.append("image", profileImage);
+
 
     setLoading(true);
     try {

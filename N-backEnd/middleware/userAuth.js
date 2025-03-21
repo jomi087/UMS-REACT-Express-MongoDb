@@ -23,8 +23,8 @@ const userAuth =async (req, res, next) => { //!Readme
         }
 
         req.user = user;
-
         next(); 
+        
     } catch (error) {
         if (error.name === "JsonWebTokenError") {    // this is written here cz not wrriten the handler in error handling and jwt.verify(token, process.env.JWT_SECRET);  will throw/ return an a error so writting if(!decode) is worth less decode will be having value always  will there either data or error so  this kine will not execute   
             return res.status(401).json({ message: "Invalid token" });

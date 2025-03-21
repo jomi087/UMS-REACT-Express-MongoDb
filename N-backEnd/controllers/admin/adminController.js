@@ -2,41 +2,41 @@ import User from "../../model/userModel.js"
 import fs from 'fs';
 import path from 'path';
 
-export const getUserProfile = async (req,res,next) => {
+export const getAdminProfile = async (req, res, next) => {
     try {
-        res.status(200).json(req.user)
+        res.status(200).json(req.admin)
     } catch (error) {
         next(error)
     }
 }
 
-export const updateUserProfile = async (req, res, next) => {
+
+export const updateAdminProfile = async (req, res, next) => {
     let fileName = null
     let filePath = null
     try {
-        console.log(req.body)
         const { name, phone, email } = req.body
-        const user = req.user
+        const admin = req.admin
         let isUpdated = false;
 
-        if (user.name !== name) {
-            user.name = name
+        if (admin.name !== name) {
+            admin.name = name
             isUpdated = true
         }
 
-        if (user.email !== email) {
+        if (admin.email !== email) {
             const isEmailExist = await User.findOne({ email })
-            if (isEmailExist  && isEmailExist._id.toString() !== user._id.toString()) {
+            if (isEmailExist  && isEmailExist._id.toString() !== admin._id.toString()) {
                 const error = new Error("This Email already exists")
                 error.statusCode = 400
                 return next(error)
             }
-            user.email = email
+            admin.email = email
             isUpdated = true
         }
 
-        if (user.phone !== phone) {
-            user.phone = phone
+        if (admin.phone !== phone) {
+            admin.phone = phone
             isUpdated = true
         }
 
@@ -49,7 +49,7 @@ export const updateUserProfile = async (req, res, next) => {
             } catch(fileError) {
                 return next(fileError)
             }
-            let privousImagePath = path.join(uploadPath, user.image); 
+                let privousImagePath = path.join(uploadPath, admin.image); 
             if (fs.existsSync(privousImagePath)) {
                 try{
                     fs.unlinkSync(privousImagePath);
@@ -57,18 +57,18 @@ export const updateUserProfile = async (req, res, next) => {
                     return next(error)
                 }
             }
-            user.image = fileName
+            admin.image = fileName
         }
         
         if (isUpdated || req.file) {
-            await user.save();
+            await admin.save();
         }
 
         res.status(200).json({
-            name: user.name,
-            email: user.email,
-            phone: user.phone,
-            image: user.image,
+            name: admin.name,
+            email: admin.email,
+            phone: admin.phone,
+            image: admin.image,
         });
     } catch (error) {
         next(error)

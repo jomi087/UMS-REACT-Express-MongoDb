@@ -3,10 +3,10 @@ import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import axios from 'axios';  
 
-import { validateEmail, validatePassword } from '../utils/formValidation';
-import { signinApi } from '../utils/constant'
+import { validateEmail, validatePassword } from '../../utils/formValidation';
+import { signinApi } from '../../utils/constant'
 import { useDispatch} from 'react-redux';
-import { addUser } from '../store/userSlice';
+import { addUser } from '../../store/userSlice';
 
 
 const SignIn = () => {

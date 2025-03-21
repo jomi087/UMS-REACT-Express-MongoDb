@@ -1,11 +1,11 @@
 import React from 'react';
-import UserCard from '../components/userCard';
+import Profile from '../../components/Profile';
 
 const Home = () => {
   return (
     <>
       <div className="flex justify-center items-center h-screen bg-zinc-300">
-        <UserCard />
+        <Profile  isUser={true}/>
       </div>
     </>
   )

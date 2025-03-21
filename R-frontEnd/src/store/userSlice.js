@@ -7,9 +7,8 @@ const userSlice = createSlice({
     },
     reducers: {  //!reducer"s" => reducers is an object that holds multiple reducer functions (addUser and logoutUser)
         addUser: (state, action) => {
-            console.log("current(state)", current(state))
-            console.log("action", action)
-
+            // console.log("current(state)", current(state))
+            // console.log("action", action)
             state.users = action.payload;  // Store user data in Redux state
             localStorage.setItem("key", JSON.stringify(action.payload));  // Save to localStorage
         },

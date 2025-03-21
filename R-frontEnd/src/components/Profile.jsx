@@ -4,42 +4,52 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons'
 
 import { validateEmail, validateImage, validateName, validatePhone } from '../utils/formValidation'
-import LogoutButton from './Logout'
-import { backendImageUrl, profile } from '../utils/constant'
+import UserLogout from './Logout'
+import AdminLogout from './AdminLogout'
+import { adminProfile, backendImageUrl, userProfile } from '../utils/constant'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import { addUser } from '../store/userSlice'
+import { addAdmin } from '../store/adminSlice'
 
-const UserCard = () => {
-    console.log("check")
+
+
+const Profile = ({ isUser, className }) => {
+    console.log("isUser",isUser)
     const [editMode, setEditMode] = useState(false)
     const [loading, setLoading] = useState(false)
+
+
+
+    const person = useSelector((state) => (isUser ? state.users.users : state.admin.admin));
+    const profile = isUser ? userProfile : adminProfile;
+    const addPerson = isUser ? addUser : addAdmin;
+
+    console.log("person",person);
     
-    const user = useSelector((state) => {
-        console.log(state);
-        return state.users.users
-    })
-    const [name,setName] = useState(user.name)
-    const [phone,setPhone] = useState(user.phone)
-    const [email,setEmail] = useState(user.email)
+
+    const [name,setName] = useState(person.name)
+    const [phone,setPhone] = useState(person.phone)
+    const [email,setEmail] = useState(person.email)
     const [profileImage, setProfileImage] = useState(null);
 
     const dispatch = useDispatch()
 
-    async function fetchUser() {
+    
+    async function fetchData() {
         try {
-            const res =await axios.get(profile,{withCredentials:true})
+            console.log(profile)
+            const res = await axios.get(profile, { withCredentials: true })
             if (res.status === 200) {
-                console.log("jomi",res)
-                dispatch(addUser(res.data))
+                dispatch(addPerson(res.data))
             }
         } catch (error) {
-            toast.error("Failed to fetch user data")
+            toast.error("Failed to fetch data")
         }
     }
     
     useEffect(() => {
-        fetchUser()
+        fetchData()
     },[])
 
     const handleEdittoggle = (val) => {
@@ -50,7 +60,7 @@ const UserCard = () => {
         e.preventDefault()
         if (loading) return;
 
-        if (name === user.name && phone === user.phone && email === user.email && !profileImage) {
+        if (name === person.name && phone === person.phone && email === person.email && !profileImage) {
             toast.info("No changes detected");
             return;
         }
@@ -74,19 +84,18 @@ const UserCard = () => {
 
         try {
             const formData = new FormData()
-            formData.append("name", name)
-            formData.append("phone", phone)
-            formData.append("email", email)
+            formData.append("name", name.trim())
+            formData.append("phone", phone.trim())
+            formData.append("email", email.trim())
             if (profileImage) {
                 formData.append("image",profileImage)
             }
-            console.log("hii")
             const res = await axios.put(profile, formData , {
                 withCredentials : true
             })
 
             if (res.status === 200) {
-                dispatch(addUser(res.data)); // Update Redux with new user data
+                dispatch(addPerson(res.data)); 
                 toast.success("Profile updated successfully!");
             }
         } catch (error) {
@@ -98,29 +107,36 @@ const UserCard = () => {
         }
     }
 
-    return user ? ( 
+    return person  ? ( 
         <>
-            <div className= {editMode ? "hidden" : "bg-white shadow-2xl shadow-black rounded-lg p-6 w-100 h-80 text-center"}>
+            <div
+                className={ isUser ? "bg-white shadow-2xl w-100 h-80 shadow-black rounded-lg p-6 text-center " : className}
+                style={{
+                    display: editMode ? "none" : "block"
+                }}
+            >
                 <div className="flex">
-                    {user.image && (
-                        <img src={`${backendImageUrl}${user.image}`} alt="profile pic" className="w-40 h-40 rounded-full relative left-3 mb-4 mx-auto object-cover"/>
+                    {person.image && (
+                        <img src={`${backendImageUrl}${person.image}`} alt="profile pic" className="w-40 h-40 rounded-full relative left-3 mb-4 mx-auto object-cover overflow-hidden"/>
                     )}
                     <FontAwesomeIcon icon={faPenToSquare} className="relative right-5 top-2 cursor-pointer" onClick={handleEdittoggle}/>
                 </div>
-                <h2 className="text-xl font-semibold text-gray-800 mb-4 ">{user.name}</h2>
-                <p className="text-gray-600 mb-2 ">{user.email}</p> 
-                <p className="text-gray-600 mb-8">{user.phone}</p>
-                <LogoutButton />
+                <h2 className="text-xl font-semibold text-gray-800 mb-4 ">{person.name.toUpperCase()}</h2>
+                <p className="text-gray-600 mb-2  ">{person.email}</p> 
+                <p className="text-gray-600 mb-8 ">{person.phone}</p>
+                <div className="text-center">
+                    { isUser ? <UserLogout /> : <AdminLogout/>  }
+                </div> 
             </div>
             {/* edit mode */}
-            <div className={editMode ? "bg-white shadow-lg shadow-black rounded-lg p-6 w-100 h-full text-center" : "hidden"}>
+            <div className={editMode ? "bg-white shadow-lg shadow-black rounded-lg p-6 h-full text-center" : "hidden"}>
                 <p
                     className="w-full text-end font-bold cursor-pointer"
                     onClick = {handleEdittoggle}
                 >
                     X
                 </p>
-                <img src={`${backendImageUrl}${user.image}`} alt="profile pic" className="w-40 h-40 rounded-full relative left-3 mb-4 mx-auto object-cover"/>
+                <img src={`${backendImageUrl}${person.image}`} alt="profile pic" className="w-40 h-40 rounded-full relative left-3 mb-4 mx-auto object-cover"/>
                 <form onSubmit={handleFormSubmit} className="">
                     <div>
                         <label htmlFor="name">
@@ -199,7 +215,7 @@ const UserCard = () => {
             </div>
         </>
     ) : (
-        <p className="text-center text-gray-500">No user data available</p>
+        <p className="text-center text-gray-500">No data available</p>
     );
 }
-export default UserCard
+export default Profile

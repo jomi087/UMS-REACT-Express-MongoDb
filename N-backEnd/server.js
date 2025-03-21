@@ -6,10 +6,10 @@ import cookieParser from "cookie-parser"
 
 //From Local files
 import dbConnect from './config/dbConnect.js'
-import errorHandler from './middleware/errorHandler.js';   //.js is required Since i am using ES modules ("type": "module" in package.json), imports must include .js when importing local files. 
-import authRouter from './Routes/user/authRouter.js'
-import adminRouter from './Routes/admin/adminRoutes.js'
-import userRouter from './Routes/user/userRoute.js';
+import errorHandler from './middleware/errorHandler.js';   //.js is required Since i am using ES modules ("type": "module" in package.json), imports must include .js when importing local files.
+import userRouter from './Routes/userRouter.js';
+import adminRouter from './Routes/adminRouter.js';
+import commonRouter from './Routes/commonRouter.js';
 
 
 const app = express() ;
@@ -28,16 +28,16 @@ const corsOptions = {
 app.use(cookieParser())  //for reading the cookies from the request (for backend needs ) in short, Express doesn’t need a package to set cookies, but it does need one to read them.[have mentiones the note on cookie in jwt notes check //#Readme  ] 
 app.use(cors(corsOptions)) 
 app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
-
 
 // Serve static files
 app.use("/uploads", express.static("uploads"));  //path not sure
 
 // Routes
-app.use('/api/auth', authRouter)
-app.use('/api/users', userRouter)
-app.use('/api/admin',adminRouter)
+app.use('/api/auth', commonRouter)
+app.use('/api/user', userRouter);
+app.use('/api/admin', adminRouter);
+
+
 
 // Error Handling Middleware
 app.use(errorHandler)

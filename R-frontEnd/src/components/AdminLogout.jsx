@@ -1,11 +1,11 @@
 import { useDispatch } from "react-redux";
-import { logoutUser } from "../store/userSlice";
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { logoutApi } from "../utils/constant";
+import { logoutAdmin } from "../store/adminSlice";
 
-const UserLogout = () => {
+const AdminLogout = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -16,13 +16,9 @@ const UserLogout = () => {
             })
             
             if (res.status === 200) {
-            
                 toast.success(res.data.message);
-                dispatch(logoutUser());
-                
-                setTimeout(() => {
-                    navigate("/");
-                }, 5000);
+                dispatch(logoutAdmin());
+                navigate("/")
             }
         } catch (error) {
             toast.error(error?.response?.data?.message ||"Logout failed" )
@@ -38,4 +34,4 @@ const UserLogout = () => {
     )
 };
 
-export default UserLogout;
+export default AdminLogout;

@@ -5,9 +5,9 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 
 
-import { emailPasswordValidation } from '../../utils/validation';
+import { validateEmail, validatePassword } from '../../utils/formValidation';
 import { adminSigninApi } from '../../utils/constant';
-import { addUser } from '../../store/userSlice';
+import { addAdmin } from '../../store/adminSlice';
 
 
 const AdminSignIn = () => {
@@ -21,12 +21,12 @@ const AdminSignIn = () => {
     e.preventDefault()
     const email = emailRef.current.value
     const password = passwordRef.current.value
-    let error = emailPasswordValidation(email, password)
     
-    if (error) {
-      toast.error(error)
-      return 
-    }
+    const emailError = validateEmail(email);
+    const passwordError = validatePassword(password);
+
+    if (emailError) return toast.error(emailError);
+    if (passwordError) return toast.error(passwordError);
 
     try {
       const res = await axios.post(adminSigninApi, {  
@@ -39,7 +39,7 @@ const AdminSignIn = () => {
       if (res.status === 200) {
 
         toast.success(res.data.message||"Sign-in successful!");
-        dispatch(addUser(res.data))
+        dispatch(addAdmin(res.data))     
         
         setTimeout(() => {
           navigate("/dashboard");

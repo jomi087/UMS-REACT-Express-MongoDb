@@ -16,6 +16,7 @@ const app = express() ;
 const port = process.env.PORT||3000 ;
 dbConnect()
 
+
 const corsOptions = {
     origin: process.env.ALLOWED_URL, // front end url  //this is how we  give access to those url which can access our apis // here its only access for my frontend url how ever  if to make acess forevery one we  user  "*" 
     credentials: true,  //allowing credentials like cookies , headers etc .... 
@@ -30,7 +31,7 @@ app.use(cors(corsOptions))
 app.use(express.json());
 
 // Serve static files
-app.use("/uploads", express.static("uploads"));  //path not sure
+app.use("/uploads", express.static("uploads")); 
 
 // Routes
 app.use('/api/auth', commonRouter)

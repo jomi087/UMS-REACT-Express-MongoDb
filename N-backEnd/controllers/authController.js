@@ -46,9 +46,10 @@ export const signUp = async (req, res, next) => {
         //JSON WEB TOKEN (JWT) and cookie  [*explain in ReadMe]   jwt.sign({payload}, secret, {options});
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' })
         
+        //res.cookie(name, value, [options]);
         res.cookie('token', token, {
             httpOnly: true,
-            secure: process.env.NODE_COOKIE_ENV === "production",
+            secure: process.env.NODE_COOKIE_ENV === "production", //now its false //later while converting it to http to https we have to make it true , so this will not allow the cookie to be sent over http ,currently it will alowed in both http and https  
             sameSite: "lax",
             maxAge: 7*24*60*60*1000
         })

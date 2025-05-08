@@ -9,7 +9,7 @@ const userSlice = createSlice({
         addUser: (state, action) => {
             // console.log("current(state)", current(state))
             // console.log("action", action)
-            state.users = action.payload;  // Store user data in Redux state
+            state.users = action.payload;  // Store user data in Redux state // also here you may think that we are mutating a state but no, reduxtoolkit is making easy for us by  abstraction were reduxtoolkit inside is creating a new copy, 
             localStorage.setItem("key", JSON.stringify(action.payload));  // Save to localStorage
         },
         logoutUser: (state) => {
@@ -19,7 +19,7 @@ const userSlice = createSlice({
     }
 });
 
-export const { addUser, logoutUser } = userSlice.actions;
+export const { addUser, logoutUser } = userSlice.actions; 
 export default userSlice.reducer; //! reducer => (is one single reducer)  createSlice automatically combines all individual reducers into one main reducer function.This combined function is stored in userSlice.reducer (singular).
 
 //?To store data, 
